@@ -27,7 +27,9 @@ public class Skills implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         ItemStack item = event.getCurrentItem();
-        if (item == )
+        if (item != null && item.getType() == Material.BLACK_STAINED_GLASS_PANE) {
+            event.setCancelled(true);
+        }
     }
 
     public Inventory SkillsGUI(Player player) {
