@@ -29,6 +29,12 @@ public class Skills implements Listener {
         ItemStack item = event.getCurrentItem();
         if (item != null && item.getType() == Material.BLACK_STAINED_GLASS_PANE) {
             event.setCancelled(true);
+        } else if (item != null && item.getType() == Material.DIAMOND_SWORD) {
+            event.setCancelled(true);
+        } else if (item != null && item.getType() == Material.GOLDEN_HOE) {
+            //TODO: Add code to open farming gui
+        } else if (item != null && item.getType() == Material.STONE_PICKAXE) {
+            //TODO: Add code to open mining gui
         }
     }
 
