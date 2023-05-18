@@ -2,15 +2,15 @@ package me.pillagedev.skyblockcore.Events;
 
 import com.google.common.collect.HashBasedTable;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.google.common.collect.Table;
 import org.bukkit.event.block.BlockBreakEvent;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.inventory.ItemStack; 
 
 public class Skills implements Listener {
     Table<String, String, Integer> skillLevel = HashBasedTable.create();
@@ -109,5 +109,15 @@ public class Skills implements Listener {
         }
     }
 
+    public int fishingLevel(Player player) {
+        return skillLevel.get(player.getName(), "fishing");
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void fishingSkill(PlayerFishEvent event) {
+        Player player = event.getPlayer();
+        float currentExp = skillExp.get(player.getName(), "fishing");
+        ItemStack caughtItem = (Item) event.getCaught();
+    }
 
 }
