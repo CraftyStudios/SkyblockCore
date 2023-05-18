@@ -2,6 +2,8 @@ package me.pillagedev.skyblockcore.Events;
 
 import com.google.common.collect.HashBasedTable;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -48,10 +50,14 @@ public class Skills implements Listener {
         //y ≈ 3.4608x^3 - 25.2433x^2 + 68.5532x + 7.7537
         float calcXP = (float) ((Math.pow((3.4608 * (farmingLevel(player) + 1)), 3)) - (Math.pow((25.2433 * (farmingLevel(player) + 1)), 2)) + (68.5532 * (farmingLevel(player) + 1)) + 7.7537);
         int xp = Math.round(calcXP);
-        while (currentExp >= xp) {
-            currentExp -= xp;
-            skillLevel.put(player.getName(), "farming", farmingLevel(player) + 1);
-            //TODO: Add farming level up message
+        if (farmingLevel(player) < 60) {
+            while (currentExp >= xp) {
+                currentExp -= xp;
+                skillLevel.put(player.getName(), "farming", farmingLevel(player) + 1);
+                //TODO: Add farming level up message
+            }
+        } else {
+            //TODO: Edit itemstack to say max level reached
         }
     }
 
@@ -102,10 +108,14 @@ public class Skills implements Listener {
         //y ≈ 3.4608x^3 - 25.2433x^2 + 68.5532x + 7.7537
         float calcXP = (float) ((Math.pow((3.4608 * (miningLevel(player) + 1)), 3)) - (Math.pow((25.2433 * (miningLevel(player) + 1)), 2)) + (68.5532 * (miningLevel(player) + 1)) + 7.7537);
         int xp = Math.round(calcXP);
-        while (currentExp >= xp) {
-            currentExp -= xp;
-            skillLevel.put(player.getName(), "mining", miningLevel(player) + 1);
-            //TODO: Add mining level up message
+        if (miningLevel(player) > 60) {
+            while (currentExp >= xp) {
+                currentExp -= xp;
+                skillLevel.put(player.getName(), "mining", miningLevel(player) + 1);
+                //TODO: Add mining level up message
+            }
+        } else {
+            //TODO: Edit itemstack to say max level reached
         }
     }
 
@@ -117,7 +127,38 @@ public class Skills implements Listener {
     public void fishingSkill(PlayerFishEvent event) {
         Player player = event.getPlayer();
         float currentExp = skillExp.get(player.getName(), "fishing");
-        ItemStack caughtItem = (Item) event.getCaught();
+        Entity caughtEntity = event.getCaught();
+
+        if (caughtEntity == null) {
+            return;
+        }
+
+        Material caughtMaterial = null;
+
+        if (caughtEntity.getType() == EntityType.DROPPED_ITEM) {
+            caughtMaterial = ((Item) caughtEntity).getItemStack().getType();
+        }
+
+        if (caughtMaterial == null) {
+            return;
+        }
+
+        if (caughtMaterial == Material.COD) {
+            float xp = 0.5f;
+            skillExp.put(player.getName(), "fishing", currentExp + xp);
+        } else if (caughtMaterial == Material.SALMON) {
+            float xp = 0.7f;
+            skillExp.put(player.getName(), "fishing", currentExp + xp);
+        } else if (caughtMaterial == Material.PUFFERFISH) {
+            float xp = 1.0f;
+            skillExp.put(player.getName(), "fishing", currentExp + xp);
+        } else if (caughtMaterial == Material.TROPICAL_FISH) {
+            float xp = 2.0f;
+            skillExp.put(player.getName(), "fishing", currentExp + xp);
+        } //TODO: Add more items
+
+        //TODO: Process sea creatures (loot and fish chance)
+
     }
 
 }
